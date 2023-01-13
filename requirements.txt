@@ -1,0 +1,4 @@
+zmq
+mss
+numpy
+python-opencv
