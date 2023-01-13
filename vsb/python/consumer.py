@@ -2,6 +2,7 @@
 import threading
 import pickle
 import datetime
+import time
 
 # Third-party Imports
 import numpy as np
@@ -31,7 +32,7 @@ class Consumer():
 
             # Compute delta time
             delta = (datetime.datetime.now() - msg['timestamp']).total_seconds()
-            print(f"fps: {(1/delta):.2f}")
+            print(f"delay: {delta:.3f}")
 
     def receive(self):
 
@@ -41,6 +42,7 @@ class Consumer():
             if not flag:
                 continue
 
+            self.ready.clear()
             return self.frame
 
 
@@ -70,12 +72,15 @@ class Consumer():
 
 if __name__ == "__main__":
 
-    consumer = Consumer(port=5555, host="localhost")
+    consumer = Consumer(port=5555, host="10.0.0.171")
     consumer.start()
 
     try:
         while True:
+            tic = time.time()
             frame = consumer.receive()
+            toc = time.time()
+            print(f"{(1/(toc-tic)):.2f}")
 
             cv2.imshow('consumer', frame)
             if cv2.waitKey(1) == ord('q'):
